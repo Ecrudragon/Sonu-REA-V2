@@ -1,0 +1,18 @@
+# App packages and signing material
+*.apk
+*.aab
+*.dex
+*.jks
+*.keystore
+*.p12
+*.pfx
+
+# Local/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python cache
+__pycache__/
+*.py[cod]
