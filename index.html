@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050505">
+  <meta name="description" content="A responsible, Android-first workflow for authorized APK inspection, documentation, and validation.">
+  <title>Sonu REA V2 — Android App Analysis Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] } } } };
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root { color-scheme: dark; --mx: 50vw; --my: 20vh; }
+    body { background:#050505; }
+    .glass { background:linear-gradient(135deg,rgba(255,255,255,.075),rgba(255,255,255,.018)),rgba(20,20,22,.72); backdrop-filter:blur(28px) saturate(170%); border:1px solid rgba(255,255,255,.12); box-shadow:inset 0 1px rgba(255,255,255,.15),0 18px 45px rgba(0,0,0,.4); }
+    #aura { position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(600px circle at var(--mx) var(--my),rgba(255,255,255,.06),transparent 75%); }
+    .pane { display:none; animation:appear .3s ease both; }
+    .pane.active { display:block; }
+    @keyframes appear { from {opacity:0;transform:translateY(8px)} to {opacity:1;transform:translateY(0)} }
+    @media(prefers-reduced-motion:reduce) { *,*::before,*::after {scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important} }
+  </style>
+</head>
+<body class="min-h-screen overflow-x-hidden font-sans text-gray-300 antialiased selection:bg-white selection:text-black">
+  <div id="aura" aria-hidden="true"></div>
+  <header class="fixed inset-x-0 top-4 z-20 px-4">
+    <div class="glass mx-auto flex h-14 max-w-5xl items-center justify-between rounded-2xl px-5">
+      <a href="#home" class="flex items-center gap-3 text-white" aria-label="Sonu REA V2 home">
+        <span class="grid h-8 w-8 place-items-center rounded-xl border border-white/20 bg-white/10"><i data-lucide="shield-check" class="h-4 w-4"></i></span>
+        <span class="text-sm font-extrabold tracking-tight">SONU REA <span class="rounded bg-white px-1.5 py-0.5 font-mono text-[10px] text-black">V2</span></span>
+      </a>
+      <a class="rounded-xl border border-white/10 bg-white/5 px-3 py-2 font-mono text-xs text-gray-300 transition hover:border-white/30 hover:text-white" href="https://github.com/morluto/rea" target="_blank" rel="noopener noreferrer">REA project ↗</a>
+    </div>
+  </header>
+  <main id="home" class="relative z-10 mx-auto max-w-4xl px-5 pb-36 pt-32">
+    <section class="space-y-5 text-center">
+      <div class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 font-mono text-xs text-gray-200"><span class="h-2 w-2 rounded-full bg-emerald-400"></span> Responsible Android app analysis</div>
+      <h1 class="text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-6xl">Understand apps.<br><span class="bg-gradient-to-b from-white to-gray-500 bg-clip-text text-transparent">Work responsibly.</span></h1>
+      <p class="mx-auto max-w-2xl text-sm leading-relaxed text-gray-400 sm:text-base">An Android-first field guide for examining applications you own or are explicitly authorized to assess. Document behavior, protect data, and validate your own builds—without defeating access controls or altering third-party apps.</p>
+      <p class="mx-auto max-w-2xl rounded-2xl border border-amber-300/20 bg-amber-300/5 p-3 text-left text-xs leading-relaxed text-amber-100/80"><strong class="text-amber-200">Authorization first:</strong> Only analyze software you own or have written permission to assess. Respect licenses, privacy, and service terms. Do not use analysis to bypass payments, authentication, integrity checks, or other security controls.</p>
+    </section>
+    <section class="mt-10 grid grid-cols-2 gap-3 md:grid-cols-4" aria-label="Project principles">
+      <div class="glass rounded-2xl p-4 text-center"><div class="font-mono text-[10px] uppercase tracking-widest text-gray-500">Platform</div><div class="mt-1 text-sm font-bold text-white">Android-first</div></div>
+      <div class="glass rounded-2xl p-4 text-center"><div class="font-mono text-[10px] uppercase tracking-widest text-gray-500">Approach</div><div class="mt-1 text-sm font-bold text-white">Authorized only</div></div>
+      <div class="glass rounded-2xl p-4 text-center"><div class="font-mono text-[10px] uppercase tracking-widest text-gray-500">Focus</div><div class="mt-1 text-sm font-bold text-white">Documentation</div></div>
+      <div class="glass rounded-2xl p-4 text-center"><div class="font-mono text-[10px] uppercase tracking-widest text-gray-500">Safety</div><div class="mt-1 text-sm font-bold text-white">No secrets in Git</div></div>
+    </section>
+    <section class="mt-12">
+      <div class="mb-5 flex items-center justify-between gap-3"><div><h2 id="stage-title" class="text-xl font-bold tracking-tight text-white sm:text-2xl">1. Prepare a safe workspace</h2><p id="stage-desc" class="mt-1 text-xs text-gray-400">Set scope and protect your device and data.</p></div><span id="stage-counter" class="shrink-0 rounded-full border border-white/15 bg-white/5 px-3 py-1 font-mono text-xs text-white">1 of 6</span></div>
+      <div id="pane-1" class="pane active glass space-y-3 rounded-3xl p-6"><h3 class="flex items-center gap-2 font-bold text-white"><i data-lucide="clipboard-check" class="h-4 w-4"></i> Define authorization and scope</h3><p class="text-sm leading-relaxed text-gray-400">Record the app, version, device, test accounts, allowed techniques, data-handling rules, and stop conditions. Use a test device and non-production accounts whenever possible. Keep a clean backup and avoid personal or customer data.</p></div>
+      <div id="pane-2" class="pane glass space-y-3 rounded-3xl p-6"><h3 class="flex items-center gap-2 font-bold text-white"><i data-lucide="package-check" class="h-4 w-4"></i> Obtain an authorized test build</h3><p class="text-sm leading-relaxed text-gray-400">Use your own app's build artifacts, a vendor-provided test build, or an app whose owner has explicitly authorized the assessment. Preserve the original artifact, record its source and version, and calculate a checksum for reproducibility. Do not access private app data or copy protected software without permission.</p></div>
+      <div id="pane-3" class="pane glass space-y-3 rounded-3xl p-6"><h3 class="flex items-center gap-2 font-bold text-white"><i data-lucide="scan-search" class="h-4 w-4"></i> Inspect and document</h3><p class="text-sm leading-relaxed text-gray-400">Use reputable, up-to-date analysis tools to review an authorized artifact. Prefer static review and vendor documentation; use an isolated test device for runtime observations. Record findings with the app version, evidence, and impact, while redacting tokens, personal information, and proprietary data from reports.</p></div>
+      <div id="pane-4" class="pane glass space-y-3 rounded-3xl p-6"><h3 class="flex items-center gap-2 font-bold text-white"><i data-lucide="file-edit" class="h-4 w-4"></i> Make changes only to your own app</h3><p class="text-sm leading-relaxed text-gray-400">For software you develop or are explicitly authorized to modify, work from source where possible, use a separate development signing key, and keep changes in a reviewed branch. Do not patch third-party applications, evade licensing or authentication, or weaken security protections.</p></div>
+      <div id="pane-5" class="pane glass space-y-3 rounded-3xl p-6"><h3 class="flex items-center gap-2 font-bold text-white"><i data-lucide="badge-check" class="h-4 w-4"></i> Build and validate reproducibly</h3><p class="text-sm leading-relaxed text-gray-400">Build from trusted source with documented tool versions. Validate the output using the platform's official build and signing tools, test it on a non-production device, and compare expected behavior. Never publish signing keys, passwords, private certificates, or unredacted logs.</p></div>
+      <div id="pane-6" class="pane glass space-y-3 rounded-3xl p-6"><h3 class="flex items-center gap-2 font-bold text-white"><i data-lucide="share-2" class="h-4 w-4"></i> Report, clean up, and share responsibly</h3><p class="text-sm leading-relaxed text-gray-400">Disclose vulnerabilities privately to the app owner through their published security contact or coordinated disclosure program. Remove test data and temporary artifacts when finished. Share only materials you have rights to distribute, and include clear limits, remediation guidance, and reproduction context that does not expose users.</p></div>
+      <div class="mt-4 flex items-center justify-between"><button id="prev" class="rounded-xl border border-white/10 px-4 py-2 text-sm text-gray-300 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40">← Previous</button><button id="next" class="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-black transition hover:bg-gray-200">Next →</button></div>
+    </section>
+    <footer class="mt-12 border-t border-white/10 pt-5 text-xs leading-relaxed text-gray-500"><p><strong class="text-gray-300">Disclaimer:</strong> This project is educational and is not legal advice. You are responsible for obtaining permission and complying with applicable law, licenses, privacy requirements, and platform terms.</p><p class="mt-2">This site is a static guide. Third-party names and tools belong to their respective owners; links do not imply endorsement.</p></footer>
+  </main>
+  <script>
+    lucide.createIcons();
+    const stages = [
+      ['1. Prepare a safe workspace','Set scope and protect your device and data.'],
+      ['2. Obtain an authorized test build','Use an artifact you own or are permitted to assess.'],
+      ['3. Inspect and document','Keep analysis isolated, minimal, and well documented.'],
+      ['4. Change only your own app','Prefer source-based, reviewed development changes.'],
+      ['5. Build and validate','Use trusted tools and protect signing material.'],
+      ['6. Report and clean up','Disclose responsibly and remove sensitive test data.']
+    ];
+    let current = 1;
+    function showStage(n) {
+      current = Math.max(1, Math.min(stages.length, n));
+      document.querySelectorAll('.pane').forEach((pane, i) => pane.classList.toggle('active', i === current - 1));
+      document.getElementById('stage-title').textContent = stages[current - 1][0];
+      document.getElementById('stage-desc').textContent = stages[current - 1][1];
+      document.getElementById('stage-counter').textContent = `${current} of ${stages.length}`;
+      document.getElementById('prev').disabled = current === 1;
+      document.getElementById('next').textContent = current === stages.length ? 'Start over ↺' : 'Next →';
+    }
+    document.getElementById('prev').addEventListener('click', () => showStage(current - 1));
+    document.getElementById('next').addEventListener('click', () => showStage(current === stages.length ? 1 : current + 1));
+    window.addEventListener('mousemove', e => {
+      document.documentElement.style.setProperty('--mx', `${e.clientX}px`);
+      document.documentElement.style.setProperty('--my', `${e.clientY}px`);
+    }, { passive: true });
+    showStage(1);
+  </script>
+</body>
+</html>
