@@ -2,92 +2,895 @@
 <html lang="en" class="scroll-smooth">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#050505">
-  <meta name="description" content="A responsible, Android-first workflow for authorized APK inspection, documentation, and validation.">
-  <title>Sonu REA V2 — Android App Analysis Studio</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = { theme: { extend: { fontFamily: { sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] } } } };
-  </script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <title>Sonu REA V2 — Android Reverse & Replica Studio</title>
+  
   <style>
-    :root { color-scheme: dark; --mx: 50vw; --my: 20vh; }
-    body { background:#050505; }
-    .glass { background:linear-gradient(135deg,rgba(255,255,255,.075),rgba(255,255,255,.018)),rgba(20,20,22,.72); backdrop-filter:blur(28px) saturate(170%); border:1px solid rgba(255,255,255,.12); box-shadow:inset 0 1px rgba(255,255,255,.15),0 18px 45px rgba(0,0,0,.4); }
-    #aura { position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(600px circle at var(--mx) var(--my),rgba(255,255,255,.06),transparent 75%); }
-    .pane { display:none; animation:appear .3s ease both; }
-    .pane.active { display:block; }
-    @keyframes appear { from {opacity:0;transform:translateY(8px)} to {opacity:1;transform:translateY(0)} }
-    @media(prefers-reduced-motion:reduce) { *,*::before,*::after {scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important} }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      color-scheme: dark;
+      --mx: 50vw;
+      --my: 20vh;
+      --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --smooth: cubic-bezier(0.16, 1, 0.3, 1);
+      --emerald: #10b981;
+      --emerald-bright: #34d399;
+    }
+
+    body {
+      background: #000000;
+      color: #e5e7eb;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-bottom: 160px;
+      position: relative;
+    }
+
+    /* Ambient Spotlight */
+    #aura {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: radial-gradient(650px circle at var(--mx) var(--my), rgba(255, 255, 255, 0.08), transparent 75%);
+    }
+
+    /* Liquid Glass Panels */
+    .glass-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%), rgba(20, 20, 26, 0.75);
+      backdrop-filter: blur(40px) saturate(200%);
+      -webkit-backdrop-filter: blur(40px) saturate(200%);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 1.5rem;
+      box-shadow: inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.3),
+                  inset 0 -1px 1px 0 rgba(0, 0, 0, 0.8),
+                  0 20px 45px -10px rgba(0, 0, 0, 0.95);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Tactile Liquid Pill Button */
+    .liquid-pill-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      padding: 0.55rem 1.15rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #ffffff;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.03) 100%), rgba(30, 30, 38, 0.85);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.45), 0 8px 20px rgba(0, 0, 0, 0.6);
+      cursor: pointer;
+      text-decoration: none;
+      user-select: none;
+      touch-action: manipulation;
+      transition: all 0.25s var(--spring);
+    }
+
+    .liquid-pill-btn:active {
+      transform: scale(0.92);
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.6);
+    }
+
+    .liquid-pill-btn-primary {
+      background: linear-gradient(180deg, #34d399 0%, #059669 100%);
+      color: #000000;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      font-weight: 700;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8), 0 8px 25px rgba(16, 185, 129, 0.35);
+    }
+
+    .liquid-pill-btn:disabled {
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    /* Fixed & Perfectly Centered Header */
+    .fixed-header {
+      position: fixed;
+      top: 0.75rem;
+      left: 0;
+      right: 0;
+      z-index: 900;
+      display: flex;
+      justify-content: center;
+      padding: 0 0.85rem;
+    }
+
+    .header-inner {
+      width: 100%;
+      max-width: 54rem;
+      height: 52px;
+      padding: 0 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 1rem;
+    }
+
+    /* Fixed & Perfectly Centered iOS Dock (No Right-Side Crop) */
+    .ios-dock-wrapper {
+      position: fixed;
+      bottom: 1.25rem;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0 0.75rem;
+      pointer-events: auto;
+    }
+
+    .ios-dock {
+      position: relative;
+      background: rgba(26, 26, 32, 0.88);
+      backdrop-filter: blur(45px) saturate(220%);
+      -webkit-backdrop-filter: blur(45px) saturate(220%);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 9999px;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      box-shadow: inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.4), 0 20px 50px rgba(0, 0, 0, 0.95);
+      width: auto;
+      max-width: calc(100vw - 1.5rem);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .ios-dock::-webkit-scrollbar { display: none; }
+
+    /* Sliding Liquid Glider Pill */
+    #dock-glider {
+      position: absolute;
+      top: 4px;
+      bottom: 4px;
+      left: 4px;
+      width: 65px;
+      border-radius: 9999px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.08) 100%), rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.6), 0 4px 18px rgba(0, 0, 0, 0.5);
+      pointer-events: none;
+      z-index: 1;
+      transition: left 0.45s var(--spring), width 0.45s var(--spring), transform 0.2s ease;
+    }
+
+    /* Dialer Items */
+    .dock-tab {
+      position: relative;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #9ca3af;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+      user-select: none;
+      touch-action: manipulation;
+      transition: color 0.25s ease, transform 0.15s var(--spring);
+      flex-shrink: 0;
+    }
+
+    .dock-tab:active {
+      transform: scale(0.9);
+      color: #ffffff;
+    }
+
+    .dock-tab.active {
+      color: #ffffff;
+    }
+
+    /* Content Stage Transition */
+    .stage-pane {
+      display: none;
+      flex-direction: column;
+      gap: 1.25rem;
+      animation: stageFade 0.35s var(--smooth) forwards;
+    }
+
+    .stage-pane.active {
+      display: flex;
+    }
+
+    @keyframes stageFade {
+      from { opacity: 0; transform: translateY(12px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .content-container {
+      max-width: 54rem;
+      margin: 0 auto;
+      padding: 4.8rem 1rem 1rem;
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+
+    .progress-bar-container {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 0.75rem;
+    }
+
+    .progress-pill {
+      flex: 1;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 9999px;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .progress-pill.active {
+      background: var(--emerald-bright);
+      box-shadow: 0 0 8px var(--emerald-bright);
+    }
+
+    pre {
+      padding: 0.9rem;
+      overflow-x: auto;
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.75rem;
+      line-height: 1.5;
+      background: rgba(10, 10, 14, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.75rem;
+      color: #34d399;
+    }
+
+    pre::-webkit-scrollbar { height: 4px; }
+    pre::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.25); border-radius: 9999px; }
+
+    /* Code Header with Copy Button */
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 0.85rem;
+      background: rgba(255, 255, 255, 0.04);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-top-left-radius: 0.75rem;
+      border-top-right-radius: 0.75rem;
+    }
+
+    .terminal-box {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.75rem;
+      overflow: hidden;
+      background: rgba(10, 10, 14, 0.95);
+    }
+
+    .terminal-box pre {
+      border: none;
+      border-radius: 0;
+    }
+
+    .copy-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0.25rem 0.65rem;
+      border-radius: 0.4rem;
+      color: #ffffff;
+      font-size: 0.7rem;
+      font-family: ui-monospace, monospace;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn:active {
+      transform: scale(0.92);
+    }
+
+    .copy-btn.copied {
+      background: rgba(16, 185, 129, 0.25) !important;
+      border-color: rgba(52, 211, 153, 0.7) !important;
+      color: #34d399 !important;
+    }
+
+    /* Floating Island Toast Notification */
+    #toast {
+      position: fixed;
+      top: 4.8rem;
+      left: 50%;
+      transform: translate(-50%, -150%);
+      background: rgba(24, 24, 30, 0.95);
+      backdrop-filter: blur(35px);
+      -webkit-backdrop-filter: blur(35px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 9999px;
+      padding: 0.5rem 1.25rem;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 15px 35px rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #ffffff;
+      z-index: 2000;
+      pointer-events: none;
+      opacity: 0;
+      transition: transform 0.4s var(--spring), opacity 0.3s ease;
+    }
+
+    #toast.show {
+      transform: translate(-50%, 0);
+      opacity: 1;
+    }
   </style>
 </head>
-<body class="min-h-screen overflow-x-hidden font-sans text-gray-300 antialiased selection:bg-white selection:text-black">
+<body>
+
+  <!-- Background Ambient Glow -->
   <div id="aura" aria-hidden="true"></div>
-  <header class="fixed inset-x-0 top-4 z-20 px-4">
-    <div class="glass mx-auto flex h-14 max-w-5xl items-center justify-between rounded-2xl px-5">
-      <a href="#home" class="flex items-center gap-3 text-white" aria-label="Sonu REA V2 home">
-        <span class="grid h-8 w-8 place-items-center rounded-xl border border-white/20 bg-white/10"><i data-lucide="shield-check" class="h-4 w-4"></i></span>
-        <span class="text-sm font-extrabold tracking-tight">SONU REA <span class="rounded bg-white px-1.5 py-0.5 font-mono text-[10px] text-black">V2</span></span>
-      </a>
-      <a class="rounded-xl border border-white/10 bg-white/5 px-3 py-2 font-mono text-xs text-gray-300 transition hover:border-white/30 hover:text-white" href="https://github.com/morluto/rea" target="_blank" rel="noopener noreferrer">REA project ↗</a>
+
+  <!-- Island Toast Alert -->
+  <div id="toast">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">Action Completed</span>
+  </div>
+
+  <!-- Perfectly Centered Fixed Header -->
+  <header class="fixed-header">
+    <div class="glass-card header-inner">
+      <div style="display:flex; align-items:center; gap:0.55rem;">
+        <div style="width:30px; height:30px; border-radius:9px; background:rgba(255,255,255,0.12); display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,0.22); box-shadow:inset 0 1px 1px rgba(255,255,255,0.4);">
+          <!-- Shield Icon -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.35rem;">
+          <span style="font-size:0.875rem; font-weight:800; letter-spacing:0.02em; color:#ffffff;">SONU REA</span>
+          <span style="font-size:9px; font-weight:900; background:#34d399; color:#000000; padding:1px 5px; border-radius:4px; font-family:monospace;">V2</span>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:0.4rem;">
+        <a href="https://github.com/Jakeschincariol/replica-skill" target="_blank" rel="noopener noreferrer" class="liquid-pill-btn" style="padding:0.3rem 0.75rem; font-size:11px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <span>replica-skill</span>
+        </a>
+        <a href="https://github.com/morluto/rea" target="_blank" rel="noopener noreferrer" class="liquid-pill-btn" style="padding:0.3rem 0.75rem; font-size:11px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+          <span>rea</span>
+        </a>
+      </div>
     </div>
   </header>
-  <main id="home" class="relative z-10 mx-auto max-w-4xl px-5 pb-36 pt-32">
-    <section class="space-y-5 text-center">
-      <div class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 font-mono text-xs text-gray-200"><span class="h-2 w-2 rounded-full bg-emerald-400"></span> Responsible Android app analysis</div>
-      <h1 class="text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-6xl">Understand apps.<br><span class="bg-gradient-to-b from-white to-gray-500 bg-clip-text text-transparent">Work responsibly.</span></h1>
-      <p class="mx-auto max-w-2xl text-sm leading-relaxed text-gray-400 sm:text-base">An Android-first field guide for examining applications you own or are explicitly authorized to assess. Document behavior, protect data, and validate your own builds—without defeating access controls or altering third-party apps.</p>
-      <p class="mx-auto max-w-2xl rounded-2xl border border-amber-300/20 bg-amber-300/5 p-3 text-left text-xs leading-relaxed text-amber-100/80"><strong class="text-amber-200">Authorization first:</strong> Only analyze software you own or have written permission to assess. Respect licenses, privacy, and service terms. Do not use analysis to bypass payments, authentication, integrity checks, or other security controls.</p>
+
+  <!-- Main Viewport Container -->
+  <main class="content-container">
+
+    <!-- Hero Section -->
+    <section style="text-align:center; display:flex; flex-direction:column; align-items:center; gap:0.85rem; padding-top:0.5rem;">
+      <div class="liquid-pill-btn" style="padding:0.35rem 0.95rem; font-size:0.75rem; border-color:rgba(52,211,153,0.3); pointer-events:none;">
+        <span style="width:6px; height:6px; border-radius:50%; background:#34d399; box-shadow:0 0 8px #34d399;"></span>
+        <span>Zero-PC Android Reverse & Replica Pipeline</span>
+      </div>
+
+      <h1 style="font-size:2.25rem; font-weight:800; line-height:1.15; letter-spacing:-0.03em; color:#ffffff;">
+        Deconstruct, Clone & Rebuild.<br>
+        <span style="background:linear-gradient(180deg, #ffffff 0%, #34d399 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Entirely on Android. 100% Free.</span>
+      </h1>
+
+      <p style="font-size:0.875rem; line-height:1.6; color:#9ca3af; max-width:34rem; margin:0 auto;">
+        Combine Dalvik Smali disassembly with the 11-step <strong>replica-skill</strong> framework by Jake Schincariol to map architecture, extract API contracts, and produce clean-room builds directly on device.
+      </p>
     </section>
-    <section class="mt-10 grid grid-cols-2 gap-3 md:grid-cols-4" aria-label="Project principles">
-      <div class="glass rounded-2xl p-4 text-center"><div class="font-mono text-[10px] uppercase tracking-widest text-gray-500">Platform</div><div class="mt-1 text-sm font-bold text-white">Android-first</div></div>
-      <div class="glass rounded-2xl p-4 text-center"><div class="font-mono text-[10px] uppercase tracking-widest text-gray-500">Approach</div><div class="mt-1 text-sm font-bold text-white">Authorized only</div></div>
-      <div class="glass rounded-2xl p-4 text-center"><div class="font-mono text-[10px] uppercase tracking-widest text-gray-500">Focus</div><div class="mt-1 text-sm font-bold text-white">Documentation</div></div>
-      <div class="glass rounded-2xl p-4 text-center"><div class="font-mono text-[10px] uppercase tracking-widest text-gray-500">Safety</div><div class="mt-1 text-sm font-bold text-white">No secrets in Git</div></div>
+
+    <!-- Key Principles Grid -->
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(110px, 1fr)); gap:0.5rem;">
+      <div class="glass-card" style="padding:0.75rem; text-align:center; border-radius:1rem;">
+        <div style="font-size:10px; font-family:monospace; color:#9ca3af; text-transform:uppercase;">ENVIRONMENT</div>
+        <div style="font-size:0.8rem; font-weight:700; color:#ffffff; margin-top:2px;">Termux + Java 17</div>
+      </div>
+      <div class="glass-card" style="padding:0.75rem; text-align:center; border-radius:1rem;">
+        <div style="font-size:10px; font-family:monospace; color:#9ca3af; text-transform:uppercase;">INSPECTION</div>
+        <div style="font-size:0.8rem; font-weight:700; color:#ffffff; margin-top:2px;">morluto/rea</div>
+      </div>
+      <div class="glass-card" style="padding:0.75rem; text-align:center; border-radius:1rem;">
+        <div style="font-size:10px; font-family:monospace; color:#9ca3af; text-transform:uppercase;">CLONE ENGINE</div>
+        <div style="font-size:0.8rem; font-weight:700; color:#ffffff; margin-top:2px;">replica-skill</div>
+      </div>
+      <div class="glass-card" style="padding:0.75rem; text-align:center; border-radius:1rem;">
+        <div style="font-size:10px; font-family:monospace; color:#9ca3af; text-transform:uppercase;">SIGNING</div>
+        <div style="font-size:0.8rem; font-weight:700; color:#ffffff; margin-top:2px;">APK V2/V3 Full</div>
+      </div>
+    </div>
+
+    <!-- Active Stage Card Header -->
+    <div class="glass-card" style="padding:1rem 1.25rem; border-radius:1.25rem;">
+      <div class="progress-bar-container">
+        <div class="progress-pill active" id="prog-1"></div>
+        <div class="progress-pill" id="prog-2"></div>
+        <div class="progress-pill" id="prog-3"></div>
+        <div class="progress-pill" id="prog-4"></div>
+        <div class="progress-pill" id="prog-5"></div>
+        <div class="progress-pill" id="prog-6"></div>
+        <div class="progress-pill" id="prog-7"></div>
+      </div>
+
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-top:0.5rem;">
+        <div>
+          <h2 id="stage-title" style="font-size:1.15rem; font-weight:800; color:#ffffff;">Stage 1: Termux Provisioning</h2>
+          <p id="stage-desc" style="font-size:0.75rem; color:#9ca3af; margin-top:2px;">Bootstrap compiler, tools, and Android storage permissions.</p>
+        </div>
+        <span id="stage-counter" class="liquid-pill-btn" style="font-size:11px; padding:0.25rem 0.75rem; pointer-events:none; border-color:rgba(52,211,153,0.4); color:#34d399;">Stage 1 / 7</span>
+      </div>
+    </div>
+
+    <!-- ================= STAGE PANES ================= -->
+
+    <!-- STAGE 1: PROVISIONING -->
+    <div id="pane-1" class="stage-pane active">
+      <div class="glass-card" style="padding:1.25rem; display:flex; flex-direction:column; gap:0.9rem;">
+        <h3 style="font-size:0.95rem; font-weight:700; color:#ffffff; display:flex; align-items:center; gap:0.45rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <span>Step 1.1: Install Genuine Termux & Toolchain</span>
+        </h3>
+        <p style="font-size:0.825rem; color:#9ca3af; line-height:1.6;">
+          Never install Termux from Google Play Store (it is outdated and repository updates will abort). Install strictly from <strong style="color:#ffffff;">F-Droid</strong> or <strong style="color:#ffffff;">GitHub Releases</strong>. Then run this one-line toolchain installer:
+        </p>
+
+        <div class="terminal-box">
+          <div class="terminal-header">
+            <span style="font-size:11px; font-family:monospace; color:#9ca3af;">termux-setup.sh</span>
+            <button class="copy-btn" onclick="window.copyText(this, 'pkg update && pkg upgrade -y && termux-setup-storage && pkg install openjdk-17 jadx apktool aapt nodejs apksigner git -y')">Copy</button>
+          </div>
+          <pre>pkg update && pkg upgrade -y
+termux-setup-storage
+pkg install openjdk-17 jadx apktool aapt nodejs apksigner git -y</pre>
+        </div>
+        <p style="font-size:0.75rem; color:#9ca3af;">When Android requests storage permission, tap <strong style="color:#ffffff;">Allow</strong>.</p>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end;">
+        <button class="liquid-pill-btn liquid-pill-btn-primary" onclick="window.navStage(2)">
+          <span>Next: Extract APK (Stage 2) →</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- STAGE 2: EXTRACTION -->
+    <div id="pane-2" class="stage-pane">
+      <div class="glass-card" style="padding:1.25rem; display:flex; flex-direction:column; gap:0.9rem;">
+        <h3 style="font-size:0.95rem; font-weight:700; color:#ffffff; display:flex; align-items:center; gap:0.45rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+          <span>Step 2.1: Locate and Pull Base APK</span>
+        </h3>
+        <p style="font-size:0.825rem; color:#9ca3af; line-height:1.6;">
+          Installed apps live in <code style="color:#ffffff; font-family:monospace;">/data/app/</code>. Their base packages are world-readable on standard Android without root:
+        </p>
+
+        <div class="terminal-box">
+          <div class="terminal-header">
+            <span style="font-size:11px; font-family:monospace; color:#9ca3af;">extract-apk.sh</span>
+            <button class="copy-btn" onclick="window.copyText(this, 'pm path com.target.app\ncp /data/app/~~.../base.apk ~/storage/shared/Download/target.apk')">Copy</button>
+          </div>
+          <pre># 1. Query path for target package (e.g., com.target.app)
+pm path com.target.app
+
+# 2. Copy the resulting path to your Download folder
+cp /data/app/~~.../base.apk ~/storage/shared/Download/target.apk</pre>
+        </div>
+        <p style="font-size:0.75rem; color:#9ca3af;">
+          <em>Alternative:</em> Use <strong>ML Manager</strong> from F-Droid to export any app to your storage in 1 click.
+        </p>
+      </div>
+
+      <div style="display:flex; justify-content:space-between;">
+        <button class="liquid-pill-btn" onclick="window.navStage(1)">← Previous</button>
+        <button class="liquid-pill-btn liquid-pill-btn-primary" onclick="window.navStage(3)">Next: Decompile (Stage 3) →</button>
+      </div>
+    </div>
+
+    <!-- STAGE 3: DECOMPILATION -->
+    <div id="pane-3" class="stage-pane">
+      <div class="glass-card" style="padding:1.25rem; display:flex; flex-direction:column; gap:0.9rem;">
+        <h3 style="font-size:0.95rem; font-weight:700; color:#ffffff; display:flex; align-items:center; gap:0.45rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+          <span>Step 3.1: Dual Disassembly (Smali & Java)</span>
+        </h3>
+        <p style="font-size:0.825rem; color:#9ca3af; line-height:1.6;">
+          Apktool creates the editable workspace, while JADX decompiles bytecode into readable Java logic:
+        </p>
+
+        <div class="terminal-box">
+          <div class="terminal-header">
+            <span style="font-size:11px; font-family:monospace; color:#9ca3af;">decompile.sh</span>
+            <button class="copy-btn" onclick="window.copyText(this, 'cd ~/storage/shared/Download\napktool d target.apk -o target_workspace\njadx -j 2 --no-res -d java_view target.apk')">Copy</button>
+          </div>
+          <pre># 1. Apktool workspace for editing Smali & Resources
+cd ~/storage/shared/Download
+apktool d target.apk -o target_workspace
+
+# 2. JADX Java source view for reading algorithms
+jadx -j 2 --no-res -d java_view target.apk</pre>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between;">
+        <button class="liquid-pill-btn" onclick="window.navStage(2)">← Previous</button>
+        <button class="liquid-pill-btn liquid-pill-btn-primary" onclick="window.navStage(4)">Next: Replica Skill (Stage 4) →</button>
+      </div>
+    </div>
+
+    <!-- STAGE 4: REPLICA-SKILL COMPLETE INTEGRATION -->
+    <div id="pane-4" class="stage-pane">
+      <div class="glass-card" style="padding:1.25rem; display:flex; flex-direction:column; gap:0.9rem;">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <h3 style="font-size:0.95rem; font-weight:700; color:#ffffff; display:flex; align-items:center; gap:0.45rem;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            <span>Step 4.1: Autonomous Clean-Room Cloning via replica-skill</span>
+          </h3>
+          <span class="liquid-pill-btn" style="padding:0.2rem 0.5rem; font-size:10px; color:#34d399;">11-Stage Skill</span>
+        </div>
+        <p style="font-size:0.825rem; color:#9ca3af; line-height:1.6;">
+          Integrate the <strong>replica-skill</strong> framework by Jake Schincariol. Instead of reading thousands of classes manually, feed your decompiled output into Claude, Cursor, or Gemini CLI to execute clean-room reproduction:
+        </p>
+
+        <!-- Replica-Skill Sub-stages Grid -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:0.5rem;">
+          <div class="glass-card" style="padding:0.75rem; border-radius:0.75rem;">
+            <span style="font-size:11px; font-family:monospace; font-weight:700; color:#34d399;">1. /replica-recon</span>
+            <p style="font-size:11px; color:#9ca3af; margin-top:2px;">Scans network endpoints, Retrofit interfaces, auth headers, and JWT/token schemas.</p>
+          </div>
+          <div class="glass-card" style="padding:0.75rem; border-radius:0.75rem;">
+            <span style="font-size:11px; font-family:monospace; font-weight:700; color:#34d399;">2. /replica-architect</span>
+            <p style="font-size:11px; color:#9ca3af; margin-top:2px;">Reconstructs SQLite/Room DAOs, SharedPreferences models, and UI tree hierarchies.</p>
+          </div>
+          <div class="glass-card" style="padding:0.75rem; border-radius:0.75rem;">
+            <span style="font-size:11px; font-family:monospace; font-weight:700; color:#34d399;">3. /replica-build</span>
+            <p style="font-size:11px; color:#9ca3af; margin-top:2px;">Generates clean, modern Kotlin/Jetpack Compose source code without tainted code reuse.</p>
+          </div>
+          <div class="glass-card" style="padding:0.75rem; border-radius:0.75rem;">
+            <span style="font-size:11px; font-family:monospace; font-weight:700; color:#34d399;">4. /replica-entrepreneur</span>
+            <p style="font-size:11px; color:#9ca3af; margin-top:2px;">Identifies billing routes, monetization APIs, proprietary moats, and features.</p>
+          </div>
+        </div>
+
+        <div class="terminal-box">
+          <div class="terminal-header">
+            <span style="font-size:11px; font-family:monospace; color:#9ca3af;">replica-agent-prompt.txt</span>
+            <button class="copy-btn" onclick="window.copyText(this, 'Execute /replica-recon on ./target_workspace:\n1. Audit all declared API contracts and OkHttp interceptors.\n2. Cross-reference with REA MCP to discover obfuscated cryptographic keys.\n3. Map internal Room entity schemas and storage models.\n4. Prepare clean-room blueprints for /replica-build.')">Copy</button>
+          </div>
+          <pre style="color:#e5e7eb;">"Execute /replica-recon on ./target_workspace:
+1. Audit all declared API contracts and OkHttp interceptors.
+2. Cross-reference with REA MCP to discover obfuscated cryptographic keys.
+3. Map internal Room entity schemas and storage models.
+4. Prepare clean-room blueprints for /replica-build."</pre>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between;">
+        <button class="liquid-pill-btn" onclick="window.navStage(3)">← Previous</button>
+        <button class="liquid-pill-btn liquid-pill-btn-primary" onclick="window.navStage(5)">Next: Modify Smali (Stage 5) →</button>
+      </div>
+    </div>
+
+    <!-- STAGE 5: EDITING SMALI -->
+    <div id="pane-5" class="stage-pane">
+      <div class="glass-card" style="padding:1.25rem; display:flex; flex-direction:column; gap:0.9rem;">
+        <h3 style="font-size:0.95rem; font-weight:700; color:#ffffff; display:flex; align-items:center; gap:0.45rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+          <span>Step 5.1: Modify Smali Instructions & Assets</span>
+        </h3>
+        <p style="font-size:0.825rem; color:#9ca3af; line-height:1.6;">
+          Open <strong>Acode Editor</strong> (Free on F-Droid) or run <code style="color:#ffffff; font-family:monospace;">nano</code> in Termux to edit files inside <code style="color:#ffffff; font-family:monospace;">~/storage/shared/Download/target_workspace</code>:
+        </p>
+
+        <!-- Smali Patch Diff -->
+        <div class="glass-card" style="padding:0.9rem; border-radius:0.75rem; border-color:rgba(52,211,153,0.3);">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.5rem;">
+            <span style="font-size:12px; font-weight:700; color:#ffffff;">Smali Diff: Override Check Routine</span>
+            <span style="font-size:10px; font-family:monospace; color:#34d399;">Interactive Patch</span>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr; gap:0.5rem;">
+            <div style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:0.5rem; padding:0.6rem;">
+              <span style="font-size:10px; font-family:monospace; color:#f87171; font-weight:700;">// BEFORE (Original Check):</span>
+              <pre style="color:#fca5a5; padding:0.25rem 0; background:transparent; border:none;">.method public isLicensed()Z
+    .registers 2
+    const/4 v0, 0x0
+    return v0
+.end method</pre>
+            </div>
+
+            <div style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:0.5rem; padding:0.6rem;">
+              <span style="font-size:10px; font-family:monospace; color:#34d399; font-weight:700;">// AFTER (Patched to Return True):</span>
+              <pre style="color:#6ee7b7; padding:0.25rem 0; background:transparent; border:none;">.method public isLicensed()Z
+    .registers 2
+    const/4 v0, 0x1    # Override to 0x1 (True)
+    return v0
+.end method</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between;">
+        <button class="liquid-pill-btn" onclick="window.navStage(4)">← Previous</button>
+        <button class="liquid-pill-btn liquid-pill-btn-primary" onclick="window.navStage(6)">Next: Rebuild (Stage 6) →</button>
+      </div>
+    </div>
+
+    <!-- STAGE 6: REBUILD & ZIPALIGN -->
+    <div id="pane-6" class="stage-pane">
+      <div class="glass-card" style="padding:1.25rem; display:flex; flex-direction:column; gap:0.9rem;">
+        <h3 style="font-size:0.95rem; font-weight:700; color:#ffffff; display:flex; align-items:center; gap:0.45rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+          <span>Step 6.1: Recompile with AAPT2 & 4-Byte Zipalign</span>
+        </h3>
+        <p style="font-size:0.825rem; color:#9ca3af; line-height:1.6;">
+          Reassemble your workspace into an APK and enforce 4-byte boundary page-alignment (required by Android 11+ runtime):
+        </p>
+
+        <div class="terminal-box">
+          <div class="terminal-header">
+            <span style="font-size:11px; font-family:monospace; color:#9ca3af;">rebuild-align.sh</span>
+            <button class="copy-btn" onclick="window.copyText(this, 'cd ~/storage/shared/Download\napktool b target_workspace -o unsigned.apk --use-aapt2\nzipalign -p -f -v 4 unsigned.apk aligned.apk')">Copy</button>
+          </div>
+          <pre>cd ~/storage/shared/Download
+# 1. Compile into unsigned APK
+apktool b target_workspace -o unsigned.apk --use-aapt2
+
+# 2. 4-byte memory boundary alignment
+zipalign -p -f -v 4 unsigned.apk aligned.apk</pre>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between;">
+        <button class="liquid-pill-btn" onclick="window.navStage(5)">← Previous</button>
+        <button class="liquid-pill-btn liquid-pill-btn-primary" onclick="window.navStage(7)">Next: Sign & Install (Stage 7) →</button>
+      </div>
+    </div>
+
+    <!-- STAGE 7: SIGN & INSTALL -->
+    <div id="pane-7" class="stage-pane">
+      <div class="glass-card" style="padding:1.25rem; display:flex; flex-direction:column; gap:0.9rem;">
+        <h3 style="font-size:0.95rem; font-weight:700; color:#ffffff; display:flex; align-items:center; gap:0.45rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><circle cx="7.5" cy="15.5" r="5.5"></circle><path d="m21 2-9.6 9.6"></path><path d="m15.5 7.5 3 3L22 7l-3-3"></path></svg>
+          <span>Step 7.1: Keystore Generation & V2/V3 Signing</span>
+        </h3>
+        <p style="font-size:0.825rem; color:#9ca3af; line-height:1.6;">
+          Generate your local RSA key and apply APK Signature Scheme V2/V3 using <code style="color:#ffffff; font-family:monospace;">apksigner</code>:
+        </p>
+
+        <div class="terminal-box">
+          <div class="terminal-header">
+            <span style="font-size:11px; font-family:monospace; color:#9ca3af;">sign-install.sh</span>
+            <button class="copy-btn" onclick="window.copyText(this, 'keytool -genkey -v -keystore release.jks -alias sonu_key -keyalg RSA -keysize 2048 -validity 10000 -storepass password123 -keypass password123 -dname &quot;CN=SonuREA, OU=Dev, O=Sonu, C=IN&quot;\napksigner sign --ks release.jks --ks-pass pass:password123 --out ready_to_install.apk aligned.apk\ntermux-open ready_to_install.apk')">Copy</button>
+          </div>
+          <pre># 1. Generate local keystore (one time only)
+keytool -genkey -v -keystore release.jks -alias sonu_key -keyalg RSA -keysize 2048 -validity 10000 -storepass password123 -keypass password123 -dname "CN=SonuREA, OU=Dev, O=Sonu, C=IN"
+
+# 2. Sign with APK V2/V3 full signature scheme
+apksigner sign --ks release.jks --ks-pass pass:password123 --out ready_to_install.apk aligned.apk
+
+# 3. Trigger native Android package installation
+termux-open ready_to_install.apk</pre>
+        </div>
+
+        <div style="background:rgba(234, 179, 8, 0.1); border:1px solid rgba(234, 179, 8, 0.3); border-radius:8px; padding:8px; color:#fde047; font-size:11px; margin-top:0.25rem;">
+          ⚠️ <strong>Crucial:</strong> Uninstall the original application from your device first, as the cryptographic signatures will not match.
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between;">
+        <button class="liquid-pill-btn" onclick="window.navStage(6)">← Previous</button>
+        <button class="liquid-pill-btn liquid-pill-btn-primary" onclick="window.navStage(1)">Finished! Restart ↺</button>
+      </div>
+    </div>
+
+    <!-- Troubleshooting Matrix -->
+    <section style="display:flex; flex-direction:column; gap:0.75rem; margin-top:0.5rem;">
+      <h3 style="font-size:0.95rem; font-weight:800; color:#ffffff;">Field-Tested Troubleshooting Matrix</h3>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:0.5rem;">
+        <div class="glass-card" style="padding:0.85rem; border-radius:0.75rem;">
+          <span style="font-size:11px; font-family:monospace; font-weight:700; color:#ffffff;">App is an App Bundle (.apks / Split APKs)</span>
+          <p style="font-size:11px; color:#9ca3af; margin-top:2px;">
+            Pass all extracted splits together into Apktool simultaneously:<br>
+            <code style="color:#ffffff; font-family:monospace;">apktool d base.apk -o out/</code>
+          </p>
+        </div>
+        <div class="glass-card" style="padding:0.85rem; border-radius:0.75rem;">
+          <span style="font-size:11px; font-family:monospace; font-weight:700; color:#ffffff;">Termux Process Killed [OOM]</span>
+          <p style="font-size:11px; color:#9ca3af; margin-top:2px;">
+            Multi-dex archives exceed RAM. Constrain parallel worker threads:<br>
+            <code style="color:#ffffff; font-family:monospace;">jadx -j 1 --no-res -d out/ target.apk</code>
+          </p>
+        </div>
+      </div>
     </section>
-    <section class="mt-12">
-      <div class="mb-5 flex items-center justify-between gap-3"><div><h2 id="stage-title" class="text-xl font-bold tracking-tight text-white sm:text-2xl">1. Prepare a safe workspace</h2><p id="stage-desc" class="mt-1 text-xs text-gray-400">Set scope and protect your device and data.</p></div><span id="stage-counter" class="shrink-0 rounded-full border border-white/15 bg-white/5 px-3 py-1 font-mono text-xs text-white">1 of 6</span></div>
-      <div id="pane-1" class="pane active glass space-y-3 rounded-3xl p-6"><h3 class="flex items-center gap-2 font-bold text-white"><i data-lucide="clipboard-check" class="h-4 w-4"></i> Define authorization and scope</h3><p class="text-sm leading-relaxed text-gray-400">Record the app, version, device, test accounts, allowed techniques, data-handling rules, and stop conditions. Use a test device and non-production accounts whenever possible. Keep a clean backup and avoid personal or customer data.</p></div>
-      <div id="pane-2" class="pane glass space-y-3 rounded-3xl p-6"><h3 class="flex items-center gap-2 font-bold text-white"><i data-lucide="package-check" class="h-4 w-4"></i> Obtain an authorized test build</h3><p class="text-sm leading-relaxed text-gray-400">Use your own app's build artifacts, a vendor-provided test build, or an app whose owner has explicitly authorized the assessment. Preserve the original artifact, record its source and version, and calculate a checksum for reproducibility. Do not access private app data or copy protected software without permission.</p></div>
-      <div id="pane-3" class="pane glass space-y-3 rounded-3xl p-6"><h3 class="flex items-center gap-2 font-bold text-white"><i data-lucide="scan-search" class="h-4 w-4"></i> Inspect and document</h3><p class="text-sm leading-relaxed text-gray-400">Use reputable, up-to-date analysis tools to review an authorized artifact. Prefer static review and vendor documentation; use an isolated test device for runtime observations. Record findings with the app version, evidence, and impact, while redacting tokens, personal information, and proprietary data from reports.</p></div>
-      <div id="pane-4" class="pane glass space-y-3 rounded-3xl p-6"><h3 class="flex items-center gap-2 font-bold text-white"><i data-lucide="file-edit" class="h-4 w-4"></i> Make changes only to your own app</h3><p class="text-sm leading-relaxed text-gray-400">For software you develop or are explicitly authorized to modify, work from source where possible, use a separate development signing key, and keep changes in a reviewed branch. Do not patch third-party applications, evade licensing or authentication, or weaken security protections.</p></div>
-      <div id="pane-5" class="pane glass space-y-3 rounded-3xl p-6"><h3 class="flex items-center gap-2 font-bold text-white"><i data-lucide="badge-check" class="h-4 w-4"></i> Build and validate reproducibly</h3><p class="text-sm leading-relaxed text-gray-400">Build from trusted source with documented tool versions. Validate the output using the platform's official build and signing tools, test it on a non-production device, and compare expected behavior. Never publish signing keys, passwords, private certificates, or unredacted logs.</p></div>
-      <div id="pane-6" class="pane glass space-y-3 rounded-3xl p-6"><h3 class="flex items-center gap-2 font-bold text-white"><i data-lucide="share-2" class="h-4 w-4"></i> Report, clean up, and share responsibly</h3><p class="text-sm leading-relaxed text-gray-400">Disclose vulnerabilities privately to the app owner through their published security contact or coordinated disclosure program. Remove test data and temporary artifacts when finished. Share only materials you have rights to distribute, and include clear limits, remediation guidance, and reproduction context that does not expose users.</p></div>
-      <div class="mt-4 flex items-center justify-between"><button id="prev" class="rounded-xl border border-white/10 px-4 py-2 text-sm text-gray-300 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40">← Previous</button><button id="next" class="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-black transition hover:bg-gray-200">Next →</button></div>
-    </section>
-    <footer class="mt-12 border-t border-white/10 pt-5 text-xs leading-relaxed text-gray-500"><p><strong class="text-gray-300">Disclaimer:</strong> This project is educational and is not legal advice. You are responsible for obtaining permission and complying with applicable law, licenses, privacy requirements, and platform terms.</p><p class="mt-2">This site is a static guide. Third-party names and tools belong to their respective owners; links do not imply endorsement.</p></footer>
+
   </main>
+
+  <!-- iOS Dialer Liquid Glass Dock (Centered & Never Cropped) -->
+  <div class="ios-dock-wrapper">
+    <nav class="ios-dock" id="stage-dock">
+      <!-- Animated Pill Glider -->
+      <div id="dock-glider"></div>
+
+      <button class="dock-tab active" data-stage="1" onclick="window.navStage(1, this)">
+        <span>1. Setup</span>
+      </button>
+      <button class="dock-tab" data-stage="2" onclick="window.navStage(2, this)">
+        <span>2. Pull</span>
+      </button>
+      <button class="dock-tab" data-stage="3" onclick="window.navStage(3, this)">
+        <span>3. Decompile</span>
+      </button>
+      <button class="dock-tab" data-stage="4" onclick="window.navStage(4, this)">
+        <span>4. Replica</span>
+      </button>
+      <button class="dock-tab" data-stage="5" onclick="window.navStage(5, this)">
+        <span>5. Edit</span>
+      </button>
+      <button class="dock-tab" data-stage="6" onclick="window.navStage(6, this)">
+        <span>6. Build</span>
+      </button>
+      <button class="dock-tab" data-stage="7" onclick="window.navStage(7, this)">
+        <span>7. Install</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- JavaScript Engine -->
   <script>
-    lucide.createIcons();
-    const stages = [
-      ['1. Prepare a safe workspace','Set scope and protect your device and data.'],
-      ['2. Obtain an authorized test build','Use an artifact you own or are permitted to assess.'],
-      ['3. Inspect and document','Keep analysis isolated, minimal, and well documented.'],
-      ['4. Change only your own app','Prefer source-based, reviewed development changes.'],
-      ['5. Build and validate','Use trusted tools and protect signing material.'],
-      ['6. Report and clean up','Disclose responsibly and remove sensitive test data.']
-    ];
-    let current = 1;
-    function showStage(n) {
-      current = Math.max(1, Math.min(stages.length, n));
-      document.querySelectorAll('.pane').forEach((pane, i) => pane.classList.toggle('active', i === current - 1));
-      document.getElementById('stage-title').textContent = stages[current - 1][0];
-      document.getElementById('stage-desc').textContent = stages[current - 1][1];
-      document.getElementById('stage-counter').textContent = `${current} of ${stages.length}`;
-      document.getElementById('prev').disabled = current === 1;
-      document.getElementById('next').textContent = current === stages.length ? 'Start over ↺' : 'Next →';
-    }
-    document.getElementById('prev').addEventListener('click', () => showStage(current - 1));
-    document.getElementById('next').addEventListener('click', () => showStage(current === stages.length ? 1 : current + 1));
-    window.addEventListener('mousemove', e => {
-      document.documentElement.style.setProperty('--mx', `${e.clientX}px`);
-      document.documentElement.style.setProperty('--my', `${e.clientY}px`);
-    }, { passive: true });
-    showStage(1);
+    (function() {
+      var stageData = [
+        ['Stage 1: Termux Provisioning', 'Bootstrap compiler, tools, and Android storage permissions.'],
+        ['Stage 2: Package Extraction', 'Locate and pull target APK base without root privileges.'],
+        ['Stage 3: Decompilation & Disassembly', 'Extract Smali bytecode, resources, and view high-level Java.'],
+        ['Stage 4: Replica Skill Clean-Room', 'Execute /replica-recon, /replica-architect & clean models.'],
+        ['Stage 5: Code & Asset Modification', 'Edit Smali logic, bypass checks, and patch base endpoints.'],
+        ['Stage 6: Rebuilding & Zipalign', 'Compile with AAPT2 and align on 4-byte boundaries.'],
+        ['Stage 7: Cryptographic Sign & Install', 'Sign with APK V2/V3 signatures and install cleanly.']
+      ];
+
+      var current = 1;
+      var total = stageData.length;
+      var glider = document.getElementById('dock-glider');
+      var dock = document.getElementById('stage-dock');
+      var toast = document.getElementById('toast');
+      var toastTimer = null;
+
+      function haptic() {
+        try {
+          if (navigator && navigator.vibrate) navigator.vibrate(12);
+        } catch(e) {}
+      }
+
+      function showToast(msg) {
+        if (!toast) return;
+        document.getElementById('toast-text').innerText = msg;
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function() {
+          toast.classList.remove('show');
+        }, 2000);
+      }
+
+      function updateGlider(btn) {
+        if (!glider || !btn) return;
+        glider.style.left = btn.offsetLeft + 'px';
+        glider.style.width = btn.offsetWidth + 'px';
+      }
+
+      window.copyText = function(btn, text) {
+        haptic();
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text);
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
+
+        var orig = btn.innerText;
+        btn.classList.add('copied');
+        btn.innerText = 'Copied!';
+        setTimeout(function() {
+          btn.classList.remove('copied');
+          btn.innerText = orig;
+        }, 1800);
+
+        showToast('Copied to clipboard');
+      };
+
+      window.navStage = function(stageNum, clickedBtn) {
+        haptic();
+        current = Math.max(1, Math.min(total, stageNum));
+
+        // 1. Update Panes & Progress Pills
+        for (var i = 1; i <= total; i++) {
+          var pane = document.getElementById('pane-' + i);
+          var prog = document.getElementById('prog-' + i);
+          if (pane) {
+            pane.classList.toggle('active', i === current);
+          }
+          if (prog) {
+            prog.classList.toggle('active', i <= current);
+          }
+        }
+
+        // 2. Update Header Info
+        document.getElementById('stage-title').textContent = stageData[current - 1][0];
+        document.getElementById('stage-desc').textContent = stageData[current - 1][1];
+        document.getElementById('stage-counter').textContent = 'Stage ' + current + ' / ' + total;
+
+        // 3. Update Dock Glider and Active Tab
+        var tabs = document.querySelectorAll('.dock-tab');
+        var targetTab = clickedBtn || tabs[current - 1];
+
+        tabs.forEach(function(t) { t.classList.remove('active'); });
+        if (targetTab) {
+          targetTab.classList.add('active');
+          updateGlider(targetTab);
+
+          // Center tab inside dock smoothly (prevent right clipping)
+          if (dock) {
+            var scrollX = targetTab.offsetLeft - (dock.clientWidth / 2) + (targetTab.clientWidth / 2);
+            dock.scrollTo({ left: scrollX, behavior: 'smooth' });
+          }
+        }
+
+        // 4. Scroll smoothly to active stage
+        var titleElem = document.getElementById('stage-title');
+        if (titleElem && clickedBtn) {
+          titleElem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      };
+
+      // Mouse Spotlight Follow
+      window.addEventListener('mousemove', function(e) {
+        document.documentElement.style.setProperty('--mx', e.clientX + 'px');
+        document.documentElement.style.setProperty('--my', e.clientY + 'px');
+      }, { passive: true });
+
+      // Init positioning
+      window.addEventListener('DOMContentLoaded', function() {
+        window.navStage(1);
+      });
+      window.addEventListener('load', function() {
+        var activeTab = document.querySelector('.dock-tab.active');
+        if (activeTab) updateGlider(activeTab);
+      });
+      setTimeout(function() {
+        var activeTab = document.querySelector('.dock-tab.active');
+        if (activeTab) updateGlider(activeTab);
+      }, 150);
+    })();
   </script>
 </body>
 </html>
